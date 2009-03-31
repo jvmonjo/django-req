@@ -77,7 +77,9 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'django.contrib.admin',
     'openrm.req',
+    'wiki',
+    'tagging',
 )

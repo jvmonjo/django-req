@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 
 from tagging.fields import TagField
 from wiki.models import Article
@@ -38,9 +37,7 @@ class ColumnHeader(models.Model):
     title = models.CharField(max_length=100)
     node = models.ForeignKey(Node)
     
-    content_type = models.ForeignKey(ContentType, limit_choices_to={'name__ends_with':'attr'})
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_type = models.ForeignKey(ContentType, limit_choices_to={'name__endswith':'attr'})
     
     def __unicode__(self):
         return self.title
@@ -58,6 +55,18 @@ class Link(models.Model):
     type = models.ForeignKey(TypeEnum, limit_choices_to = {'type':'link'})
     source = models.ForeignKey(Item, related_name='source_links')
     target = models.ForeignKey(Item, related_name='target_links')
+
+class Document(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    node = models.ForeignKey(Node)
+    file = models.FileField(upload_to='ooo_files')
+    
+    def download_file(self):
+        return '<a href=%s>%s</a>' % (self.file.url, self.file)
+    download_file.allow_tags=True
+    
+    def __unicode__(self):
+        return self.file.name
 
 class Attribute(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
