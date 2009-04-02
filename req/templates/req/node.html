@@ -1,0 +1,9 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Requirements management{% endblock %}
+
+{% block content %}
+<h1>Node {{ node.title }}</h1>
+{% if node.parent %}<a href=../{{ node.parent.pk }}/>parent</a>{% endif %}
+<p>
+children{% for c in node.children.all %} | <a href=../{{ c.pk }}/>{{ c.title }}</a>{% endfor %}
+{% endblock %}

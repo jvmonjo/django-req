@@ -26,7 +26,7 @@ class Node(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
     title = models.CharField(max_length=200)
     index = models.IntegerField(null=True, blank=True)
-    parent = models.ForeignKey('self', null=True, blank=True)
+    parent = models.ForeignKey('self', related_name='children', null=True, blank=True)
     
     tags = TagField()
     
