@@ -9,3 +9,9 @@ from models import *
 def node(request, id, template='req/node.html'):
     dict = {'node':Node.objects.get(pk=int(id))}
     return render_to_response(template,dict, context_instance=RequestContext(request))
+
+def admin(request):
+    return None
+
+def item(request):
+    return None
