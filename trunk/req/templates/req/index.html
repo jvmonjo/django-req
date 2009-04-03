@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Requirements management{% endblock %}
+
+{% block content %}
+<h1>Djreq</h1>
+{{nodes.count}}
+{% for node in nodes %}
+  <br><a href=node/{{ node.pk }}/>{{ node.title }}</a>
+{% endfor %}
+
+{% endblock %}

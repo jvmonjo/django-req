@@ -42,7 +42,14 @@ class ColumnHeader(models.Model):
     def __unicode__(self):
         return self.title
 
+class View(models.Model):
+    title = models.CharField(max_length=100)
+    node = models.ForeignKey(Node)
     
+    headers = models.ManyToManyField(ColumnHeader)
+    def __unicode__(self):
+        return self.title
+   
 class Item(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
     node = models.ForeignKey(Node)
