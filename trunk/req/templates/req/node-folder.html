@@ -1,0 +1,35 @@
+{% extends "admin/base_site.html" %}
+{% block title %}Requirements management{% endblock %}
+
+
+{% block branding %}
+<h1 id="site-name">DjReq</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs"><a href=/>home</a> | <a href=/admin>admin</a>
+{% if node.parent %} | <a href=../{{ node.parent.pk }}/>parent</a>{% endif %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<h1>Node {{ node.title }}</h1>
+<a href=new/project/>new project</a> | <a href=new/folder/>new folder</a>
+<p>
+
+{% for c in node.children.all %}
+{% if forloop.first %}children:{% endif %}
+| <a href=../{{ c.pk }}/>{{ c.title }}</a>
+{% endfor %}
+
+<h2>About this page</h2>
+<pre>
+- navigation in the node hierarchy: projects, folders, modules
+- The current node is a folder; a folder may contain projects
+  and modules.
+
+TODO
+- links to admin functions: admin, ...
+</pre>
+{% endblock %}

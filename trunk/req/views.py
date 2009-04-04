@@ -6,9 +6,12 @@ from django.template import RequestContext
 
 from models import *
 
-def node(request, id, template='req/node.html'):
-    dict = {'node':Node.objects.get(pk=int(id))}
-    return render_to_response(template,dict, context_instance=RequestContext(request))
+def node(request, id, template='req/node%s.html'):
+    node = Node.objects.get(pk=int(id))
+    template_gen = template % ""
+    template = template % ("-" + node.type)
+    dict = {'node':node}
+    return render_to_response((template, template_gen),dict, context_instance=RequestContext(request))
 
 def admin(request):
     return None

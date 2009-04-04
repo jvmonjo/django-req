@@ -14,6 +14,8 @@ class Version(models.Model):
 
 ENUM_TYPE_CHOICES = (('link','Link'),
                      ('attr','Enum Attribute'),
+                     ('req-patern','Req patern'),
+                     ('title-patern','Title patern'),
                      )
 class TypeEnum(models.Model):
     name = models.CharField(max_length=50)
@@ -29,6 +31,7 @@ NODE_TYPE_CHOICES = (('project','Project'),
                      ('folder','Folder'),
                      ('module','Module'),
                      ('module-title','Title'),
+                     ('template','Template'),
                      )
 class Node(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
@@ -49,11 +52,12 @@ class ColumnHeader(models.Model):
     content_type = models.ForeignKey(ContentType, limit_choices_to={'name__endswith':'attr'})
     
     def __unicode__(self):
-        return self.title
+        return '%s:%s' % (self.node, self.title)
 
 class View(models.Model):
     title = models.CharField(max_length=100)
     node = models.ForeignKey(Node, limit_choices_to = {'type':'module'})
+    index = models.IntegerField(null=True, blank=True)
     
     headers = models.ManyToManyField(ColumnHeader)
     def __unicode__(self):
@@ -61,10 +65,12 @@ class View(models.Model):
    
 class Item(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
-    node = models.ForeignKey(Node, limit_choices_to = {'type_startswith':'module'})
+    node = models.ForeignKey(Node, limit_choices_to = {'type__startswith':'module'})
     index = models.IntegerField(null=True, blank=True)
     
     tags = TagField()
+    def __unicode__(self):
+        return '%s:%d' % (self.node, self.index)
 
 class Link(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
@@ -95,9 +101,9 @@ class Attribute(models.Model):
 
 
 class KeyAttr(Attribute):
-    slug = models.SlugField()
+    text = models.CharField(max_length=100)
     def __unicode__(self):
-        return self.slug
+        return self.text
 
 class ShortTextAttr(Attribute):
     text = models.CharField(max_length=100)
@@ -121,7 +127,7 @@ class EnumAttr(Attribute):
         return self.value.name
 
 class ArticleAttr(Attribute):
-    article = models.ForeignKey(Article)
+    article = models.ForeignKey(Article, null=True, blank=True)
     
     def __unicode__(self):
         return self.article.title
