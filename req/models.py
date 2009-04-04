@@ -12,9 +12,12 @@ class Version(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
 
+ENUM_TYPE_CHOICES = (('link','Link'),
+                     ('attr','Enum Attribute'),
+                     )
 class TypeEnum(models.Model):
     name = models.CharField(max_length=50)
-    type = models.CharField(max_length=50)
+    type = models.CharField(max_length=50, choices=ENUM_TYPE_CHOICES)
     
     def __unicode__(self):
         return self.name
@@ -22,10 +25,16 @@ class TypeEnum(models.Model):
     class meta:
         unique_together = ('name', 'type')
 
+NODE_TYPE_CHOICES = (('project','Project'),
+                     ('folder','Folder'),
+                     ('module','Module'),
+                     ('module-title','Title'),
+                     )
 class Node(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
     title = models.CharField(max_length=200)
     index = models.IntegerField(null=True, blank=True)
+    type = models.CharField(max_length=20, choices=NODE_TYPE_CHOICES)
     parent = models.ForeignKey('self', related_name='children', null=True, blank=True)
     
     tags = TagField()
@@ -35,7 +44,7 @@ class Node(models.Model):
 
 class ColumnHeader(models.Model):
     title = models.CharField(max_length=100)
-    node = models.ForeignKey(Node)
+    node = models.ForeignKey(Node, limit_choices_to={'type':'module'})
     
     content_type = models.ForeignKey(ContentType, limit_choices_to={'name__endswith':'attr'})
     
@@ -44,7 +53,7 @@ class ColumnHeader(models.Model):
 
 class View(models.Model):
     title = models.CharField(max_length=100)
-    node = models.ForeignKey(Node)
+    node = models.ForeignKey(Node, limit_choices_to = {'type':'module'})
     
     headers = models.ManyToManyField(ColumnHeader)
     def __unicode__(self):
@@ -52,7 +61,7 @@ class View(models.Model):
    
 class Item(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
-    node = models.ForeignKey(Node)
+    node = models.ForeignKey(Node, limit_choices_to = {'type_startswith':'module'})
     index = models.IntegerField(null=True, blank=True)
     
     tags = TagField()
@@ -62,6 +71,8 @@ class Link(models.Model):
     type = models.ForeignKey(TypeEnum, limit_choices_to = {'type':'link'})
     source = models.ForeignKey(Item, related_name='source_links')
     target = models.ForeignKey(Item, related_name='target_links')
+    
+    tags = TagField()
 
 class Document(models.Model):
     date = models.DateTimeField(auto_now_add=True)
@@ -99,7 +110,7 @@ class IntAttr(Attribute):
         return self.value
 
 class EnumAttr(Attribute):
-    value = models.ForeignKey(TypeEnum)
+    value = models.ForeignKey(TypeEnum, limit_choices_to = {'type':'attr'})
     
     def __unicode__(self):
         return self.slug
