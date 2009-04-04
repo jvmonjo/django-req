@@ -1,9 +1,52 @@
 {% extends "admin/base_site.html" %}
 {% block title %}Requirements management{% endblock %}
 
+
+{% block branding %}
+<h1 id="site-name">DjReq</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs"><a href=/>home</a> | <a href=/admin>admin</a>
+{% if node.parent %} | <a href=../{{ node.parent.pk }}/>parent</a>{% endif %}
+</div>
+{% endblock %}
+
+
 {% block content %}
 <h1>Node {{ node.title }}</h1>
-{% if node.parent %}<a href=../{{ node.parent.pk }}/>parent</a>{% endif %}
 <p>
-children{% for c in node.children.all %} | <a href=../{{ c.pk }}/>{{ c.title }}</a>{% endfor %}
+{% for c in node.children.all %}
+{% if forloop.first %}children:{% endif %}
+| <a href=../{{ c.pk }}/>{{ c.title }}</a>
+{% endfor %}
+
+<h2>About this page</h2>
+<pre>
+{% ifequal node.type "project" %}
+- navigation in the node hierarchy: projects, folders, modules
+- The current node is a project
+- projects may be classified in folders
+- a project may contain folders and modules.
+
+TODO
+- links to admin functions: admin, ...
+{% endifequal %}
+{% ifequal node.type "folder" %}
+- navigation in the node hierarchy: projects, folders, modules
+- The current node is a folder; a folder may contain projects
+  and modules.
+
+TODO
+- links to admin functions: admin, ...
+{% endifequal %}
+{% ifequal node.type "module" %}
+- The current node is a module; a module contains items
+- an item has attributes
+- attributes visibility is managed by views in a module
+
+TODO
+- admin column headers, views
+{% endifequal %}
+</pre>
 {% endblock %}

@@ -1,11 +1,26 @@
 {% extends "admin/base_site.html" %}
 {% block title %}Requirements management{% endblock %}
 
+{% block branding %}
+<h1 id="site-name">DjReq - Django Requirements management</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs"><a href=/>home</a> | <a href=/admin>admin</a></div>
+{% endblock %}
+
 {% block content %}
-<h1>Djreq</h1>
-{{nodes.count}}
+{{nodes.count}} project(s)
 {% for node in nodes %}
   <br><a href=node/{{ node.pk }}/>{{ node.title }}</a>
 {% endfor %}
+<h2>About this page</h2>
+<pre>
+- list of projects
+</pre>
+<h2>To do</h2>
+<pre>
+- minimalistic css stylesheet
+</pre>
 
 {% endblock %}
