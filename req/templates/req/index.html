@@ -10,6 +10,8 @@
 {% endblock %}
 
 {% block content %}
+<a href=new/project/>new project</a> | <a href=new/folder/>new folder</a> | <a href=settings/>settings</a>
+<p>
 {{nodes.count}} project(s)
 {% for node in nodes %}
   <br><a href=node/{{ node.pk }}/>{{ node.title }}</a>
@@ -20,7 +22,7 @@
 </pre>
 <h2>To do</h2>
 <pre>
-- minimalistic css stylesheet
+- minimalistic css stylesheet or pinax style
 </pre>
 
 {% endblock %}
