@@ -66,11 +66,18 @@ class View(models.Model):
 class Item(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
     node = models.ForeignKey(Node, limit_choices_to = {'type__startswith':'module'})
-    index = models.IntegerField(null=True, blank=True)
+    index = models.IntegerField(default=0, help_text='0: auto')
     
     tags = TagField()
     def __unicode__(self):
         return '%s:%d' % (self.node, self.index)
+    
+    def save(self):
+        if self.index == 0 and not self.pk:
+            qs = Item.objects.filter(node=self.node).order_by('-index')
+            if qs.count() > 0: self.index = qs[0].index + 1
+            else: self.index = 1
+        super(Item, self).save()
 
 class Link(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
@@ -96,6 +103,13 @@ class Attribute(models.Model):
     version = models.ForeignKey(Version, null=True, blank=True)
     item = models.ForeignKey(Item)
     column = models.ForeignKey(ColumnHeader)
+    
+    def save(self):
+        # todo: indentation/title nodes
+        if self.item.node != self.column.node:
+            raise Exception("Attribute exception: item.node != column.node")
+        super(Attribute, self).save()
+        
     class Meta:
         abstract = True
 
@@ -104,6 +118,10 @@ class KeyAttr(Attribute):
     text = models.CharField(max_length=100)
     def __unicode__(self):
         return self.text
+    
+    def save(self):
+        # todo: column header content-type
+        super(KeyAttr, self).save()
 
 class ShortTextAttr(Attribute):
     text = models.CharField(max_length=100)
