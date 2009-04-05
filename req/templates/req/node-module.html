@@ -15,12 +15,17 @@
 
 {% block content %}
 <h1>Module {{ node.title }}</h1>
-views: <a href=view/tbd>view tbd</a><br>
+views: {% for view in node.view_set.all %}<a href=view/{{ view.pk }}/>{{ view.title }}</a> |{% endfor %}
+<br>
 <a href=new/view/>new view</a> | <a href=new/doc/>import document</a>
 <p>
-{% for c in node.children.all %}
-{% if forloop.first %}children:{% endif %}
-| <a href=../{{ c.pk }}/>{{ c.title }}</a>
+{% for h in view.header_list %}
+  {{ h.title }}
+{% endfor %}
+<br>
+
+{% for item in node.items %}
+>	{% for a in item.attrs %}{{ a.html }} {% endfor %}<br>
 {% endfor %}
 
 <h2>About this page</h2>

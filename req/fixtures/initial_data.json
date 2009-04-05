@@ -180,12 +180,32 @@
     "model": "req.view", 
     "fields": {
       "node": 6, 
-      "index": 0, 
       "headers": [
         1, 
         2
       ], 
       "title": "Document"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "req.view", 
+    "fields": {
+      "node": 3, 
+      "headers": [
+        3, 
+        4
+      ], 
+      "title": "Standard"
+    }
+  }, 
+  {
+    "pk": 1, 
+    "model": "req.filter", 
+    "fields": {
+      "enabled": true, 
+      "value": "Text_contains=\"hello world\"", 
+      "view": 1
     }
   }, 
   {
