@@ -28,9 +28,13 @@ class ColumnHeaderAdmin(admin.ModelAdmin):
     save_as = True
 admin.site.register(ColumnHeader, ColumnHeaderAdmin)
 
+class FilterInline(admin.TabularInline):
+    model = Filter
+
 class ViewAdmin(admin.ModelAdmin):
-    list_display = ('title', 'node', 'index')
-    order_by = ('index',)
+    list_display = ('title', 'node',)
+    inlines = [FilterInline,]
+    save_as = True
 admin.site.register(View, ViewAdmin)
 
 class ItemAdmin(admin.ModelAdmin):
