@@ -8,10 +8,12 @@ from models import *
 
 def node(request, id, view_id=None, template='req/node%s.html'):
     node = Node.objects.get(pk=int(id))
+    view = None
     if view_id:
         view = View.objects.get(node=node, pk=int(view_id))
     else:
-        view = View.objects.get(node=node, title='Standard')
+        if node.type == 'module':
+            view = View.objects.get(node=node, title='Standard')
     template_gen = template % ""
     template = template % ("-" + node.type)
     node.display_view(view)

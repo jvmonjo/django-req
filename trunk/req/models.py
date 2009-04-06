@@ -43,14 +43,18 @@ class Node(models.Model):
     
     tags = TagField()
     
+    view_items = []
+    
     def __unicode__(self):
         return self.title
     
     def display_view(self, view):
         """ put transient attributes values on items according to view. 
         """
-        for item in self.items():
+        self.view_items = []
+        for item in self.items().order_by('index'):
             item.display_view(view)
+            self.view_items.append(item)
     
     def items(self):
         return self.item_set.all()
@@ -118,9 +122,10 @@ class Item(models.Model):
     def display_view(self, view):
         """ put transient attributes values on item according to view. 
         """
+        
         headers = list(view.headers.all())
         self.attrs = list( self.keyattr_set.filter(column__in=headers).order_by('column') )
-        self.attrs.append( self.articleattr_set.filter(column__in=headers).order_by('column') )
+        self.attrs.extend( self.articleattr_set.filter(column__in=headers).order_by('column') )
     
     def save(self):
         if self.index == 0 and not self.pk:
@@ -156,7 +161,7 @@ class Attribute(models.Model):
     
     def save(self):
         # todo: indentation/title nodes
-        if self.item.node.module != self.column.node:
+        if self.item.node.module() != self.column.node:
             raise Exception("Attribute exception: item.node.module != column.node")
         super(Attribute, self).save()
         

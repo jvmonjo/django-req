@@ -18,15 +18,16 @@
 views: {% for view in node.view_set.all %}<a href=view/{{ view.pk }}/>{{ view.title }}</a> |{% endfor %}
 <br>
 <a href=new/view/>new view</a> | <a href=new/doc/>import document</a>
-<p>
-{% for h in view.header_list %}
-  {{ h.title }}
-{% endfor %}
-<br>
+<table border=2>
+<tr>
+{% for h in view.header_list %}<th>{{ h.title }}</th>{% endfor %}
+</tr>
 
-{% for item in node.items %}
->	{% for a in item.attrs %}{{ a.html }} {% endfor %}<br>
+{% for item in node.view_items %}
+<tr>{% for a in item.attrs %}<td>{{ a.html|linebreaks }}</td>{% endfor %}</tr>
 {% endfor %}
+
+</table>
 
 <h2>About this page</h2>
 <pre>
